@@ -1,24 +1,17 @@
-import 'package:internet_connection_checker/internet_connection_checker.dart';
-
 /*
 ╔═══════════════════════════════════════════════════╗
-║ Created by Fady Fouad on 07/18/2022 at 13:10.     ║
+║ Created by Fady Fouad on 07/18/2022 at 15:18.     ║
 ║═══════════════════════════════════════════════════║
 ║ fady.fouad.a@gmail.com.                           ║
 ╚═══════════════════════════════════════════════════╝
 */
 
-abstract class NetworkInfo {
-  Future<bool> get isConnected;
-}
+abstract class ApiConsumer {
+  Future<dynamic> get(String url, [Map<String, dynamic>? params]);
 
-class NetworkInfoImpl implements NetworkInfo {
-  InternetConnectionChecker internetConnectionChecker;
-
-  @override
-  Future<bool> get isConnected => internetConnectionChecker.hasConnection;
-
-  NetworkInfoImpl({
-    required this.internetConnectionChecker,
+  Future<dynamic> post(
+    String url, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? params,
   });
 }

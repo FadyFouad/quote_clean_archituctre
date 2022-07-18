@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quote_clean_archituctre/core/network/network_info.dart';
-import 'package:quote_clean_archituctre/features/quote/data/local/quote_local_data_source.dart';
-import 'package:quote_clean_archituctre/features/quote/data/remote/quote_remote_data_source.dart';
-import 'package:quote_clean_archituctre/features/quote/data/repositories/quote_repository_imp.dart';
-import 'package:quote_clean_archituctre/features/quote/domain/repositories/quote_repository.dart';
-import 'package:quote_clean_archituctre/features/quote/domain/usecases/get_random_quote.dart';
+import 'package:quote_clean_archituctre/di.dart';
 import 'package:quote_clean_archituctre/features/quote/presentation/cubit/quote_cubit.dart';
 import 'package:quote_clean_archituctre/features/quote/presentation/pages/quote_screen.dart';
 
 void main() {
+  init();
   runApp(const MyApp());
 }
 
@@ -20,19 +16,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => QuoteCubit(randomQuote: GetRandomQuote(repository: QuoteRepositoryImp(networkInfo: NetworkInfoImpl(),getQuoteLocalDataSource: GetQuoteLocalDataSourceImpl(),getQuoteRemoteDataSource: GetQuoteRemoteDataSourceImpl()))),
+      create: (context) => QuoteCubit(randomQuote: sl()),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
           primarySwatch: Colors.blue,
         ),
         home: const QuoteScreen(),
@@ -112,10 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline4,
+              style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),

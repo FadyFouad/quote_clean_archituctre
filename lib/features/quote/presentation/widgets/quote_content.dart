@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quotes/core/utils/app_colors.dart';
-import 'package:quotes/features/random_quote/domain/entities/quote.dart';
+import 'package:quote_clean_archituctre/features/quote/domain/entities/quote.dart';
 
 class QuoteContent extends StatelessWidget {
   final Quote quote;
@@ -12,10 +11,10 @@ class QuoteContent extends StatelessWidget {
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-          color: AppColors.primary, borderRadius: BorderRadius.circular(30)),
+          color: Colors.blueAccent, borderRadius: BorderRadius.circular(30)),
       child: Column(
         children: [
-          Text(quote.content,
+          Text(quote.quote,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium),
           Container(

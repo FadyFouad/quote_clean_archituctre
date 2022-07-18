@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:quotes/config/locale/app_localizations.dart';
-import 'package:quotes/core/utils/app_colors.dart';
-import 'package:quotes/core/utils/app_strings.dart';
-import 'package:quotes/features/random_quote/presentation/cubit/random_quote_cubit.dart';
-import 'package:quotes/features/splash/presentation/cubit/locale_cubit.dart';
-import '../widgets/quote_content.dart';
-import 'package:quotes/core/widgets/error_widget.dart' as error_widget;
+import 'package:quote_clean_archituctre/features/quote/presentation/cubit/quote_cubit.dart';
+import 'package:quote_clean_archituctre/features/quote/presentation/widgets/quote_content.dart';
 
 class QuoteScreen extends StatefulWidget {
   const QuoteScreen({Key? key}) : super(key: key);
@@ -17,8 +11,7 @@ class QuoteScreen extends StatefulWidget {
 }
 
 class _QuoteScreenState extends State<QuoteScreen> {
-  _getRandomQuote() =>
-      BlocProvider.of<RandomQuoteCubit>(context).getRandomQuote();
+  _getRandomQuote() => BlocProvider.of<QuoteCubit>(context).getRandomQuote();
 
   @override
   void initState() {
@@ -27,19 +20,14 @@ class _QuoteScreenState extends State<QuoteScreen> {
   }
 
   Widget _buildBodyContent() {
-    return BlocBuilder<RandomQuoteCubit, RandomQuoteState>(
-        builder: ((context, state) {
-      if (state is RandomQuoteIsLoading) {
+    return BlocBuilder<QuoteCubit, QuoteState>(builder: ((context, state) {
+      if (state is QuoteLoading) {
         return Center(
-          child: SpinKitFadingCircle(
-            color: AppColors.primary,
-          ),
+          child: CircularProgressIndicator(),
         );
-      } else if (state is RandomQuoteError) {
-        return error_widget.ErrorWidget(
-          onPress: () => _getRandomQuote(),
-        );
-      } else if (state is RandomQuoteLoaded) {
+      } else if (state is QuoteError) {
+        return Text(state.failure.toString());
+      } else if (state is QuoteLoaded) {
         return Column(
           children: [
             QuoteContent(
@@ -51,7 +39,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
                   margin: const EdgeInsets.symmetric(vertical: 15),
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: AppColors.primary),
+                      shape: BoxShape.circle, color: Colors.blueAccent),
                   child: const Icon(
                     Icons.refresh,
                     size: 28,
@@ -62,9 +50,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
         );
       } else {
         return Center(
-          child: SpinKitFadingCircle(
-            color: AppColors.primary,
-          ),
+          child: CircularProgressIndicator(),
         );
       }
     }));
@@ -72,22 +58,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(
-      leading: IconButton(
-        icon: Icon(
-          Icons.translate_outlined,
-          color: AppColors.primary,
-        ),
-        onPressed: () {
-          if (AppLocalizations.of(context)!.isEnLocale) {
-            BlocProvider.of<LocaleCubit>(context).toArabic();
-          } else {
-            BlocProvider.of<LocaleCubit>(context).toEnglish();
-          }
-        },
-      ),
-      title: Text(AppLocalizations.of(context)!.translate('app_name')!),
-    );
+    final appBar = AppBar();
     return RefreshIndicator(
         child: Scaffold(appBar: appBar, body: _buildBodyContent()),
         onRefresh: () => _getRandomQuote());

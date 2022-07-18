@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:quote_clean_archituctre/core/error/failures.dart';
+import 'package:quote_clean_archituctre/core/network/api/api_consumer.dart';
+import 'package:quote_clean_archituctre/core/network/api/end_points.dart';
 import 'package:quote_clean_archituctre/features/quote/data/models/quote_model.dart';
-import 'package:quote_clean_archituctre/features/quote/domain/entities/quote.dart';
 
 /*
 ╔═══════════════════════════════════════════════════╗
@@ -16,13 +16,19 @@ abstract class GetQuoteRemoteDataSource {
   Future<Either<Failure, QuoteModel>> getRandomQuote();
 }
 
-class GetQuoteRemoteDataSourceImpl implements GetQuoteRemoteDataSource {
+class GetQuoteRemoteDataSourceImpl extends GetQuoteRemoteDataSource {
+  ApiConsumer apiConsumer;
+
+  GetQuoteRemoteDataSourceImpl({required this.apiConsumer});
+
   @override
   Future<Either<Failure, QuoteModel>> getRandomQuote() async {
-    return Right(QuoteModel(
-        id: 1,
-        quote: 'Get Quote From Api',
-        author: 'Fady',
-        permalink: 'link'));
+    try {
+      var res = await apiConsumer.get(quotesUrl);
+      print(res);
+      return Right(QuoteModel.fromJson(res));
+    } catch (e) {
+      return Left(ServerFailure());
+    }
   }
 }
