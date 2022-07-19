@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quote_clean_archituctre/di.dart';
+import 'package:quote_clean_archituctre/config/locale/app_localizations_setup.dart';
+import 'package:quote_clean_archituctre/config/routes/app_routes.dart';
+import 'package:quote_clean_archituctre/di.dart' as di;
 import 'package:quote_clean_archituctre/features/quote/presentation/cubit/quote_cubit.dart';
-import 'package:quote_clean_archituctre/features/quote/presentation/pages/quote_screen.dart';
 
-void main() {
-  init();
+void main() async {
+  di.init();
   runApp(const MyApp());
 }
 
@@ -16,13 +17,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => QuoteCubit(randomQuote: sl()),
+      create: (context) => QuoteCubit(randomQuote: di.sl()),
       child: MaterialApp(
         title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizationsSetup.localizationsDelegates,
+        supportedLocales: AppLocalizationsSetup.supportedLocales,
+        // locale: const Locale('ar'),
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const QuoteScreen(),
+        onGenerateRoute: AppRoutes.onGenerateRoute,
       ),
     );
   }

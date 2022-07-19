@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quote_clean_archituctre/features/quote/presentation/cubit/quote_cubit.dart';
 import 'package:quote_clean_archituctre/features/quote/presentation/widgets/quote_content.dart';
 
@@ -58,7 +59,9 @@ class _QuoteScreenState extends State<QuoteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar();
+    final appBar = AppBar(
+      title: Text(AppLocalizations.of(context)!.appName),
+    );
     return RefreshIndicator(
         child: Scaffold(appBar: appBar, body: _buildBodyContent()),
         onRefresh: () => _getRandomQuote());

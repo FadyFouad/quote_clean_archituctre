@@ -1,0 +1,7 @@
+{
+  "helloWorld": "مرحبا يا عااالم!",
+  "@helloWorld": {
+    "description": "The conventional newborn programmer greeting"
+  },
+  "appName": " كلين اركتكتشر!"
+}

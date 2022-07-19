@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:quote_clean_archituctre/core/error/failures.dart';
 import 'package:quote_clean_archituctre/core/network/api/api_consumer.dart';
 import 'package:quote_clean_archituctre/core/network/api/end_points.dart';
@@ -27,7 +28,7 @@ class GetQuoteRemoteDataSourceImpl extends GetQuoteRemoteDataSource {
       var res = await apiConsumer.get(quotesUrl);
       print(res);
       return Right(QuoteModel.fromJson(res));
-    } catch (e) {
+    } on DioError catch (e) {
       return Left(ServerFailure());
     }
   }
