@@ -15,7 +15,6 @@ class GetSavedLocalUseCase extends UseCase<String, NoParams> {
   final ChangeLocalRepository localRepository;
 
   GetSavedLocalUseCase({required this.localRepository});
-
   @override
   Future<Either<Failure, String>> call(NoParams params) {
     return localRepository.getSavedLang();

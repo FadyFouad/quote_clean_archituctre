@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:quote_clean_archituctre/core/usecasetory.dart';
+import 'package:quote_clean_archituctre/core/usecase.dart';
 import 'package:quote_clean_archituctre/features/splash/domain/usecases/change_local.dart';
 import 'package:quote_clean_archituctre/features/splash/domain/usecases/get_saved_local.dart';
 

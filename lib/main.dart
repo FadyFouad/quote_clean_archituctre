@@ -4,14 +4,14 @@ import 'package:quote_clean_archituctre/bloc_observer.dart';
 import 'package:quote_clean_archituctre/config/locale/app_localizations_setup.dart';
 import 'package:quote_clean_archituctre/config/routes/app_routes.dart';
 import 'package:quote_clean_archituctre/di.dart' as di;
-import 'package:quote_clean_archituctre/features/quote/presentation/cubit/quote_cubitaved_local.dart';
+import 'package:quote_clean_archituctre/features/quote/presentation/cubit/quote_cubit.dart';
 import 'package:quote_clean_archituctre/features/splash/presentation/cubit/local_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
   BlocOverrides.runZoned(
-    () {
+        () {
       runApp(const MyApp());
     },
     blocObserver: AppBlocObserver(),
