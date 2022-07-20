@@ -18,7 +18,7 @@ class LocalCubit extends Cubit<LocalState> {
 
   var currentLangCode = 'en';
 
-  _getSavedLocal() async {
+  getSavedLocal() async {
     final response = await getLocalUseCase(NoParams());
     response.fold((failure) => debugPrint('Failed'), (value) {
       currentLangCode = value;

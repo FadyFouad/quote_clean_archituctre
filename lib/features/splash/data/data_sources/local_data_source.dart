@@ -30,7 +30,7 @@ class LocalDataSourceImpl extends LocaleDataSource {
   @override
   Future<Either<Failure, String>> getSavedLang() async {
     final String locale = prefs.getString('locale') ?? '';
-    return Right(locale);
+    return locale == '' ? Right(locale) : Left(CacheFailure());
   }
 
 }
