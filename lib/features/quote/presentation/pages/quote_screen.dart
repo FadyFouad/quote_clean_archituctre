@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:quote_clean_archituctre/features/quote/presentation/cubit/quote_cubit.dart';
 import 'package:quote_clean_archituctre/features/quote/presentation/widgets/quote_content.dart';
+import 'package:quote_clean_archituctre/features/splash/presentation/cubit/local_cubit.dart';
 
 class QuoteScreen extends StatefulWidget {
   const QuoteScreen({Key? key}) : super(key: key);
@@ -12,7 +13,15 @@ class QuoteScreen extends StatefulWidget {
 }
 
 class _QuoteScreenState extends State<QuoteScreen> {
-  _getRandomQuote() => BlocProvider.of<QuoteCubit>(context).getRandomQuote();
+  _getRandomQuote() {
+    BlocProvider.of<QuoteCubit>(context).getRandomQuote();
+
+    // if (AppLocalizations.of(context)!.localeName == 'en') {
+    //   BlocProvider.of<LocalCubit>(context).toArabic();
+    // } else {
+    // BlocProvider.of<LocalCubit>(context).toEnglish();
+    // }
+  }
 
   @override
   void initState() {
@@ -61,6 +70,21 @@ class _QuoteScreenState extends State<QuoteScreen> {
   Widget build(BuildContext context) {
     final appBar = AppBar(
       title: Text(AppLocalizations.of(context)!.appName),
+      actions: [
+        InkWell(
+            onTap: () {
+              print(AppLocalizations.of(context)!.localeName);
+              if (AppLocalizations.of(context)!.localeName == 'ar') {
+                BlocProvider.of<LocalCubit>(context).toEnglish();
+              } else {
+                BlocProvider.of<LocalCubit>(context).toArabic();
+              }
+            },
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Icon(Icons.language),
+            )),
+      ],
     );
     return RefreshIndicator(
         child: Scaffold(appBar: appBar, body: _buildBodyContent()),

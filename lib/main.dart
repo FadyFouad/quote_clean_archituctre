@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quote_clean_archituctre/bloc_observer.dart';
 import 'package:quote_clean_archituctre/config/locale/app_localizations_setup.dart';
 import 'package:quote_clean_archituctre/config/routes/app_routes.dart';
 import 'package:quote_clean_archituctre/di.dart' as di;
-import 'package:quote_clean_archituctre/features/quote/presentation/cubit/quote_cubit.dart';
+import 'package:quote_clean_archituctre/features/quote/presentation/cubit/quote_cubitaved_local.dart';
+import 'package:quote_clean_archituctre/features/splash/presentation/cubit/local_cubit.dart';
 
 void main() async {
-  di.init();
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
+  BlocOverrides.runZoned(
+    () {
+      runApp(const MyApp());
+    },
+    blocObserver: AppBlocObserver(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,18 +24,29 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => QuoteCubit(randomQuote: di.sl()),
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizationsSetup.localizationsDelegates,
-        supportedLocales: AppLocalizationsSetup.supportedLocales,
-        // locale: const Locale('ar'),
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        onGenerateRoute: AppRoutes.onGenerateRoute,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => di.sl<QuoteCubit>()),
+        BlocProvider(
+            create: (context) => LocalCubit(
+                getLocalUseCase: di.sl(), changeLocaleUseCae: di.sl())),
+      ],
+      // create: (context) => QuoteCubit(randomQuote: di.sl()),
+      child: BlocBuilder<LocalCubit, LocalState>(
+        builder: (context, state) {
+          return MaterialApp(
+            title: 'Flutter Demo',
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates:
+                AppLocalizationsSetup.localizationsDelegates,
+            supportedLocales: AppLocalizationsSetup.supportedLocales,
+            locale: state.locale,
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            onGenerateRoute: AppRoutes.onGenerateRoute,
+          );
+        },
       ),
     );
   }

@@ -10,6 +10,12 @@ import 'package:quote_clean_archituctre/features/quote/data/repositories/quote_r
 import 'package:quote_clean_archituctre/features/quote/domain/repositories/quote_repository.dart';
 import 'package:quote_clean_archituctre/features/quote/domain/usecases/get_random_quote.dart';
 import 'package:quote_clean_archituctre/features/quote/presentation/cubit/quote_cubit.dart';
+import 'package:quote_clean_archituctre/features/splash/data/data_sources/local_data_source.dart';
+import 'package:quote_clean_archituctre/features/splash/data/repositories/local_repository_impl.dart';
+import 'package:quote_clean_archituctre/features/splash/domain/repositories/change_local_repository.dart';
+import 'package:quote_clean_archituctre/features/splash/domain/usecases/change_local.dart';
+import 'package:quote_clean_archituctre/features/splash/domain/usecases/get_saved_local.dart';
+import 'package:quote_clean_archituctre/features/splash/presentation/cubit/local_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*
@@ -22,20 +28,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
 
-void init() {
+Future<void> init() async {
   // sl.registerSingleton<DioClient>(DioClient());
   externals();
   dataSource();
   repositories();
   useCase();
   cubit();
+
+  await initPrefManager();
 }
 
-void cubit() {
-  sl.registerFactory(() => QuoteCubit(randomQuote: sl()));
+Future<void> initPrefManager() async {
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
 }
 
 void useCase() {
+  sl.registerLazySingleton<GetSavedLocalUseCase>(
+      () => GetSavedLocalUseCase(localRepository: sl()));
+
+  sl.registerLazySingleton<ChangeLocaleUseCase>(
+      () => ChangeLocaleUseCase(localeRepository: sl()));
+
   sl.registerLazySingleton<GetRandomQuote>(
       () => GetRandomQuote(repository: sl()));
 }
@@ -48,17 +63,26 @@ void repositories() {
       getQuoteLocalDataSource: sl(),
     ),
   );
+  sl.registerLazySingleton<ChangeLocalRepository>(
+    () => LocalRepositoryImpl(localeDataSource: sl()),
+  );
 }
 
-void dataSource() {
+void dataSource() async {
   sl.registerLazySingleton<GetQuoteRemoteDataSource>(
       () => GetQuoteRemoteDataSourceImpl(apiConsumer: sl()));
   sl.registerLazySingleton<GetQuoteLocalDataSource>(
       () => GetQuoteLocalDataSourceImpl());
+
+  /// inject DataSource
+  sl.registerLazySingleton<LocaleDataSource>(
+      () => LocalDataSourceImpl(prefs: sl()));
 }
 
-void initPrefManager(SharedPreferences _initPrefManager) {
-  // sl.registerLazySingleton<PrefManager>(() => PrefManager(_initPrefManager));
+void cubit() {
+  sl.registerFactory(() => QuoteCubit(randomQuote: sl()));
+  sl.registerFactory(
+      () => LocalCubit(getLocalUseCase: sl(), changeLocaleUseCae: sl()));
 }
 
 void externals() {

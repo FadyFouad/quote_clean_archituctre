@@ -33,12 +33,12 @@ class DioConsumer extends ApiConsumer {
       };
 
     client.interceptors.add(LogInterceptor(
-      request: true,
+      // request: true,
       error: true,
-      requestBody: true,
-      responseBody: true,
-      requestHeader: true,
-      responseHeader: true,
+      // requestBody: true,
+      // responseBody: true,
+      // requestHeader: true,
+      // responseHeader: true,
     ));
     client.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
       // Do something before request is sent
